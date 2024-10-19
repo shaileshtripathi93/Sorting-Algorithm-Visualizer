@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Algorithm Visualizer</title>
+    <style>
+        /* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+/* Title */
+h1 {
+    margin: 20px 0;
+    font-size: 2.5rem;
+    color: #333;
+}
+
+/* Control Panel */
+.controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.controls select, .controls button, .controls input {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #333;
+    cursor: pointer;
+}
+
+#speedControl {
+    width: 150px;
+}
+
+#speedLabel {
+    font-weight: bold;
+}
+
+/* Array Bars Container */
+#array-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 300px;
+    width: 90%;
+    max-width: 1200px;
+    background-color: #fff;
+    border: 2px solid #333;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Style for the bars */
+#array-container div {
+    margin: 2px;
+    background-color: #00adb5;
+    width: 20px;
+    transition: all 0.2s ease;
+}
+
+/* Info Section */
+#info {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#info p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+#info span {
+    font-weight: bold;
+    color: #ff5722;
+}
+
+/* Button Styles */
+button {
+    background-color: #00adb5;
+    color: #fff;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #007f88;
+}
+
+select, input {
+    border-color: #00adb5;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Sorting Algorithm Visualizer</h1>
+    <div class="controls">
+        <select id="algorithm">
+            <option value="bubble">Bubble Sort</option>
+            <option value="quick">Quick Sort</option>
+            <!-- Add more algorithms -->
+        </select>
+        <button id="startBtn">Start</button>
+        <button id="resetBtn">Reset</button>
+        <input type="range" id="speedControl" min="1" max="10" value="5">
+        <span id="speedLabel">Speed: 5</span>
+    </div>
+    <div id="array-container"></div>
+    <div id="info">
+        <p>Time Complexity: <span id="timeComplexity"></span></p>
+        <p>Space Complexity: <span id="spaceComplexity"></span></p>
+    </div>
+    <script>
+        document.getElementById("startBtn").addEventListener("click", () => {
+            let array = generateRandomArray(20); // Create an array of random numbers
+            renderBars(array); // Render the bars in the DOM
+            visualizeBubbleSort(array); // Start sorting visualization
+        });
+        
+        function generateRandomArray(size) {
+            let array = [];
+            for (let i = 0; i < size; i++) {
+                array.push(Math.floor(Math.random() * 300) + 50); // Random heights between 50 and 350
+            }
+            return array;
+        }
+        
+        function renderBars(array) {
+            const container = document.getElementById("array-container");
+            container.innerHTML = ""; // Clear the container before rendering new bars
+            array.forEach(value => {
+                const bar = document.createElement("div");
+                bar.style.height = `${value}px`;
+                container.appendChild(bar);
+            });
+        }
+        
+        function visualizeBubbleSort(array) {
+            let n = array.length;
+            let bars = document.getElementById("array-container").children;
+            let delay = 0;
+        
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n - i - 1; j++) {
+                    setTimeout(() => {
+                        // Highlight the bars being compared
+                        bars[j].style.backgroundColor = "#f77f00"; // Active bar
+                        bars[j + 1].style.backgroundColor = "#f77f00"; // Active bar
+        
+                        if (array[j] > array[j + 1]) {
+                            swap(j, j + 1, array);
+                            updateBars(bars, array);
+                        }
+        
+                        // Revert color after comparison
+                        setTimeout(() => {
+                            bars[j].style.backgroundColor = "#00adb5"; // Reset bar color
+                            bars[j + 1].style.backgroundColor = "#00adb5"; // Reset bar color
+                        }, 500); // Half the delay to reset color
+        
+                    }, delay);
+                    delay += 1000; // Increment delay for visualization effect
+                }
+            }
+        }
+        
+        function swap(i, j, array) {
+            let temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        
+        function updateBars(bars, array) {
+            for (let i = 0; i < array.length; i++) {
+                bars[i].style.height = `${array[i]}px`;
+            }
+        }
+        </script>
+        
+</body>
+</html>
